@@ -9,3 +9,7 @@ Route::get('/', function () {
 
 Route::get('/login', [SpotifyController::class, 'login'])->name('spotify.login');
 Route::get('/callback', [SpotifyController::class, 'callback'])->name('spotify.callback');
+
+Route::get('mood', function () {
+return view('mood');
+})->name('mood.select');
