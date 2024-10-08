@@ -15,3 +15,7 @@ return view('mood');
 })->name('mood.select');
 
 Route::post('/playlist', [SpotifyController::class, 'generatePlaylist'])->name('playlist.generate');
+
+Route::get('/webplayback', function () {
+    return view('webplayback');
+})->name('webplayback');
