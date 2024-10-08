@@ -13,3 +13,5 @@ Route::get('/callback', [SpotifyController::class, 'callback'])->name('spotify.c
 Route::get('mood', function () {
 return view('mood');
 })->name('mood.select');
+
+Route::post('/playlist', [SpotifyController::class, 'generatePlaylist'])->name('playlist.generate');
