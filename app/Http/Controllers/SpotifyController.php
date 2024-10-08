@@ -40,4 +40,29 @@ class SpotifyController extends Controller
 
         return redirect()->route('mood.select');
     }
+
+    public function generatePlaylist(Request $request)
+    {
+        $mood = $request->input('mood');
+        $seedGenres = $this->getMoodGenres($mood);
+
+        // Get access token from session
+        $accessToken = session('spotify_access_token');
+
+        // Make request to API
+        $client = new Client();
+        $response = $client->get('https://api.spotify.com/v1/recommendations', [
+            'headers' => [
+                'Authorization' => 'Bearer' . $accessToken,
+            ],
+            'query' => [
+                'seed_genres' => implode(',', $seedGenres),
+                'limit' => 10,
+                'target_energy' => $this->getEnergyLevel($mood),
+                'target_valence' => $this->getValence($mood),
+            ],
+        ]);
+
+        $body = json_decode($response->getBody());
+    }
 }
