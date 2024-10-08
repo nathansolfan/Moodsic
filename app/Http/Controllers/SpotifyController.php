@@ -53,7 +53,7 @@ class SpotifyController extends Controller
         $client = new Client();
         $response = $client->get('https://api.spotify.com/v1/recommendations', [
             'headers' => [
-                'Authorization' => 'Bearer' . $accessToken,
+                'Authorization' => 'Bearer ' . $accessToken, // Ensure there is a space between 'Bearer' and the token
             ],
             'query' => [
                 'seed_genres' => implode(',', $seedGenres),
@@ -64,6 +64,10 @@ class SpotifyController extends Controller
         ]);
 
         $body = json_decode($response->getBody());
+
+        // Pass the tracks to the view
+        return view('playlist', ['tracks' => $body->tracks]);
+
     }
 
     private function getMoodGenres($mood)
@@ -80,6 +84,16 @@ class SpotifyController extends Controller
             default:
                 return ['pop'];
         }
+    }
+
+    private function getEnergyLevel($mood)
+    {
+        return $mood === 'energetic' ? 0.9 : 0.5;
+    }
+
+    private function getValence($mood)
+    {
+        return $mood === 'happy' ? 0.9 : 0.3;
     }
 
 
