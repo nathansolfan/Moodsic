@@ -88,13 +88,34 @@ class SpotifyController extends Controller
 
     private function getEnergyLevel($mood)
     {
-        return $mood === 'energetic' ? 0.9 : 0.5;
+        switch ($mood) {
+            case 'energetic':
+                return 0.9;
+            case 'happy':
+                return 0.7;
+            case 'sad':
+                return 0.2;
+            case 'relaxed':
+                return 0.4;
+            default:
+                return 0.5;
+        }
     }
 
     private function getValence($mood)
     {
-        return $mood === 'happy' ? 0.9 : 0.3;
+        switch ($mood) {
+            case 'energetic':
+                return 0.9;
+            case 'happy':
+                return 0.7;
+            case 'sad':
+                return 0.1;
+            case 'relaxed':
+                return 0.5;
+            default:
+                return 0.3;
+        }
     }
-
 
 }
