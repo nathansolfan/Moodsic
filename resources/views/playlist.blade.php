@@ -12,7 +12,18 @@
     <h1>Your Playlist</h1>
     <ul>
         @foreach ($tracks as $track)
-        <li> {{$track->name}} by {{$track->artists[0]->name }}</li>
+        <li> {{$track->name}} by {{$track->artists[0]->name }}
+
+        @if ($track->preview_url)
+        <br>
+        <audio controls>
+            <source src=" {{$track->preview_url}}" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
+        @else
+        <p>No preview Available</p>
+        @endif
+    </li>
         @endforeach
     </ul>
 </body>
