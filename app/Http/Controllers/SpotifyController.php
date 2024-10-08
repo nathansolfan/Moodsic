@@ -65,4 +65,22 @@ class SpotifyController extends Controller
 
         $body = json_decode($response->getBody());
     }
+
+    private function getMoodGenres($mood)
+    {
+        switch ($mood) {
+            case 'happy':
+                return ['pop', 'dance'];
+            case 'sad':
+                return ['acoustic', 'blues'];
+            case 'energetic':
+                return ['rock', 'edm'];
+            case 'relaxed':
+                return ['chill', 'ambient'];
+            default:
+                return ['pop'];
+        }
+    }
+
+
 }
