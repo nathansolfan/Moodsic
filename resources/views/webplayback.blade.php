@@ -28,7 +28,7 @@
 
     <script>
         window.onSpotifyWebPlaybackSDKReady = () => {
-            const token = '{{ session('spotify_access_token')}}'
+            const token = '{{ session('spotify_webplayback_token') }}';
             const player = new Spotify.Player({
                 name: 'My Web Playback Player',
                 getOAuthToken: cb => { cb(token); },
