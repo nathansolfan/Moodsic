@@ -12,6 +12,11 @@
     <div>
         <h1>Spotify Web Playback</h1>
 
+        <!-- Display any error message from the session -->
+        @if (session('error'))
+            <div class="text-red-500 mb-4">{{ session('error') }}</div>
+        @endif
+
         <!-- Button to toggle play/pause -->
         <button id="togglePlay">
             Toggle Play
