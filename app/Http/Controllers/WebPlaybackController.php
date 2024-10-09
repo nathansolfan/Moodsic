@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use PhpParser\Node\Stmt\TryCatch;
 
 class WebPlaybackController extends Controller
 {
@@ -21,6 +22,7 @@ class WebPlaybackController extends Controller
     {
         $code = $request->input('code');
 
+        try {
         // Exchange auth code for access token
         $client = new Client();
         $response = $client->post('https://accounts.spotify.com/api/token', [
@@ -35,11 +37,22 @@ class WebPlaybackController extends Controller
 
         $body = json_decode($response->getBody());
 
+
+        if (!isset($body->access_token)) {
+            return redirect()->route('webplayback')->with('error', 'Failed to retrieve access token.');
+        }
+
         // Store access token in session
         session(['spotify_access_token' => $body->access_token]);
 
         // Redirect to Web Plaback view
         return redirect()->route('webplayback');
+
+        } catch (\Exception $e) {
+            return redirect()->route('webplayback')->with('error', 'Error during authentication: ' . $e->getMessage());
+        }
+
+
     }
 
     // Render Web Playback view

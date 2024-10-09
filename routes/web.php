@@ -1,11 +1,15 @@
 <?php
 
 use App\Http\Controllers\SpotifyController;
+use App\Http\Controllers\WebPlaybackController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+// Existing SpotifyController routes
 
 Route::get('/login', [SpotifyController::class, 'login'])->name('spotify.login');
 Route::get('/callback', [SpotifyController::class, 'callback'])->name('spotify.callback');
@@ -16,6 +20,9 @@ return view('mood');
 
 Route::post('/playlist', [SpotifyController::class, 'generatePlaylist'])->name('playlist.generate');
 
-Route::get('/webplayback', function () {
-    return view('webplayback');
-})->name('webplayback');
+
+// New WebPlaybackController routes
+
+Route::get('/webplayback/login', [WebPlaybackController::class, 'login'])->name('webplayback.login');
+Route::get('/webplayback/callback', [WebPlaybackController::class, 'callback'])->name('webplayback.callback');
+Route::get('/webplayback', [WebPlaybackController::class, 'playback'])->name('webplayback');
