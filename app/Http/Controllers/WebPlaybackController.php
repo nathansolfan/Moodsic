@@ -11,7 +11,7 @@ class WebPlaybackController extends Controller
     public function login()
     {
         $clientId = env('SPOTIFY_CLIENT_ID');
-        $redirectUri = env('SPOTIFY_REDIRECT_URI');
+        $redirectUri = env('SPOTIFY_WEBPLAYBACK_REDIRECT_URI');  // Use the Web Playback redirect URI
         $scopes = 'user-read-private user-read-email streaming user-read-playback-state user-modify-playback-state';
 
         return redirect("https://accounts.spotify.com/authorize?client_id={$clientId}&response_type=code&redirect_uri={$redirectUri}&scope={$scopes}");
@@ -29,7 +29,7 @@ class WebPlaybackController extends Controller
             'form_params' => [
                 'grant_type' => 'authorization_code',
                 'code' => $code,
-                'redirect_uri' => env('SPOTIFY_REDIRECT_URI'),
+                'redirect_uri' => env('SPOTIFY_WEBPLAYBACK_REDIRECT_URI'),
                 'client_id' => env('SPOTIFY_CLIENT_ID'),
                 'client_secret' => env('SPOTIFY_CLIENT_SECRET')
             ],
