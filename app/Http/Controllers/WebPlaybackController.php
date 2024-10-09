@@ -43,7 +43,7 @@ class WebPlaybackController extends Controller
         }
 
         // Store access token in session
-        session(['spotify_access_token' => $body->access_token]);
+        session(['spotify_webplayback_token' => $body->access_token]);
 
         // Redirect to Web Plaback view
         return redirect()->route('webplayback');
