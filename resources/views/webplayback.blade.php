@@ -8,37 +8,39 @@
     @vite('resources/css/app.css')
     <script src="https://sdk.scdn.co/spotify-player.js"></script> <!-- Load the Spotify Web Playback SDK -->
 </head>
-<body>
-    <div>
-        <h1>Spotify Web Playback</h1>
+<body class="bg-gray-900 flex items-center justify-center h-screen">
+    <div class="bg-gray-800 text-white rounded-lg p-6 max-w-lg w-full shadow-md">
+        <h1 class="text-3xl font-bold text-center mb-8">Spotify Web Playback</h1>
 
         <!-- Display any error message from the session -->
         @if (session('error'))
-            <div class="text-red-500 mb-4">{{ session('error') }}</div>
+            <div class="text-red-500 mb-4 text-center">{{ session('error') }}</div>
         @endif
 
         <!-- Current Track info -->
-        <div>
-            <img id="album-art" src="" alt="Album Art">
-            <h2 id="track-name"></h2>
-            <p id="artist-name"></p>
+        <div class="text-center mb-6">
+            <img id="album-art" class="w-48 h-48 mx-auto rounded-lg shadow-lg" src="" alt="Album Art">
+            <h2 id="track-name" class="text-xl font-semibold mt-4"></h2>
+            <p id="artist-name" class="text-gray-400"></p>
         </div>
 
         <!-- Button to toggle play/pause -->
-        <button id="togglePlay">
-            Toggle Play
-        </button>
+        <div class="text-center mb-4">
+            <button id="togglePlay" class="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600 transition duration-200">
+                Toggle Play
+            </button>
+        </div>
 
         <!-- Track Progress-->
-        <div id="progress-container">
-            <span id="current-progress">00:00</span> / <span id="track-duration">00:00</span>
-            <div class="progress-bar bg-gray-200 mt-2 w-full h-1">
+        <div id="progress-container" class="text-center mb-4">
+            <span id="current-progress" class="text-sm">00:00</span> / <span id="track-duration" class="text-sm">00:00</span>
+            <div class="bg-gray-600 mt-2 w-full h-2 rounded-full overflow-hidden">
                 <div id="progress-bar-fill" class="bg-green-500 h-full" style="width: 0%;"></div>
             </div>
         </div>
 
         <!-- Display Spotify Player Events -->
-        <p id="status" class="text-center mt-4"></p>
+        <p id="status" class="text-center text-sm text-gray-400 mt-4"></p>
     </div>
 
     <script>
@@ -63,17 +65,17 @@
             });
 
             // Error Listeners
-            player.addListener('initialization_error', ({ message}) => console.error(message));
-            player.addListener('authentication_error', ({ message}) => console.error(message));
-            player.addListener('account_error', ({ message}) => console.error(message));
+            player.addListener('initialization_error', ({ message }) => console.error(message));
+            player.addListener('authentication_error', ({ message }) => console.error(message));
+            player.addListener('account_error', ({ message }) => console.error(message));
 
             // Toggle Play
             document.getElementById('togglePlay').onclick = function() {
                 player.togglePlay();
             };
 
-            // Function format time in mm:ss format
-            function formatTime(seconds){
+            // Function to format time in mm:ss format
+            function formatTime(seconds) {
                 const minutes = Math.floor(seconds / 60);
                 const remainingSeconds = Math.floor(seconds % 60);
                 return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
@@ -105,11 +107,11 @@
                         updateTrackInfo(state);
                         updateProgress(state);
                     }
-                })
+                });
             }, 1000);
 
             // Connect Player
-            player.connect()
+            player.connect();
         };
     </script>
 </body>
