@@ -7,6 +7,7 @@
     <title>Spotify Web Playback</title>
     @vite('resources/css/app.css')
     <script src="https://sdk.scdn.co/spotify-player.js"></script> <!-- Load the Spotify Web Playback SDK -->
+    <script src="{{ asset('js/audiofeatures.js') }}"></script> <!-- Load your audiofeatures.js file -->
 </head>
 <body class="bg-gray-900 flex items-center justify-center h-screen">
     <div class="bg-gray-800 text-white rounded-lg p-6 max-w-lg w-full shadow-md">
@@ -23,6 +24,19 @@
             <h2 id="track-name" class="text-xl font-semibold mt-4"></h2>
             <p id="artist-name" class="text-gray-400"></p>
         </div>
+
+        <!-- Audio Features -->
+
+        <div class="text-center mb-6">
+            <h3>Audio Features</h3>
+            <p id="valence" class="text-gray-400"></p>
+            <p id="energy" class="text-gray-400"></p>
+            <p id="danceability" class="text-gray-400"></p>
+            <p id="tempo" class="text-gray-400"></p>
+            <p id="acousticness" class="text-gray-400"></p>
+            <p id="instrumentalness" class="text-gray-400"></p>
+        </div>
+
 
         <!-- Button to toggle play/pause -->
         <div class="text-center mb-4">
