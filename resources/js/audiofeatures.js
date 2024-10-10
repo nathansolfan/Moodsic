@@ -1,5 +1,5 @@
 // Fetch the audio features
-function getAudioFeatures(trackId) {
+function getAudioFeatures(trackId, token) {
     fetch(`https://api.spotify.com/v1/audio-features/${trackId}`, {
         headers: {
             'Authorization': `Bearer ${token}`
@@ -23,3 +23,9 @@ function displayAudioFeatures(features) {
     document.getElementById('acousticness').textContent = `Acousticness: ${features.acousticness}`;
     document.getElementById('instrumentalness').textContent = `Instrumentalness: ${features.instrumentalness}`;
 }
+
+export { getAudioFeatures }; // Export the function so it can be used in Blade
+
+
+// Update your UI
+
