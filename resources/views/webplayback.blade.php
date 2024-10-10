@@ -37,7 +37,6 @@
             </div>
         </div>
 
-
         <!-- Display Spotify Player Events -->
         <p id="status" class="text-center mt-4"></p>
     </div>
@@ -72,6 +71,24 @@
             document.getElementById('togglePlay').onclick = function() {
                 player.togglePlay();
             };
+
+            // Function format time in mm:ss format
+            function formatTime(seconds){
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = Math.floor(seconds % 60);
+                return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+            }
+
+            // Update track info
+            function updateTrackInfo(state) {
+                const track = state.track_window.current_track;
+                document.getElementById('track-name').textContent = track.name;
+                document.getElementById('artist-name').textContent = track.artists.map(artist => artist.name).join(', ');
+                document.getElementById('album-art').src = track.album.images[0].url;
+                document.getElementById('track-duration').textContent = formatTime(track.duration_ms / 1000);
+
+
+            }
 
             // Connect Player
             player.connect()
