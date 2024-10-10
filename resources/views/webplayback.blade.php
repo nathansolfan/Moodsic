@@ -17,10 +17,26 @@
             <div class="text-red-500 mb-4">{{ session('error') }}</div>
         @endif
 
+        <!-- Current Track info -->
+        <div>
+            <img id="album-art" src="" alt="Album Art">
+            <h2 id="track-name"></h2>
+            <p id="artist-name"></p>
+        </div>
+
         <!-- Button to toggle play/pause -->
         <button id="togglePlay">
             Toggle Play
         </button>
+
+        <!-- Track Progress-->
+        <div id="progress-container">
+            <span id="current-progress">00:00</span> / <span id="track-duration">00:00</span>
+            <div class="progress-bar bg-gray-200 mt-2 w-full h-1">
+                <div id="progress-bar-fill" class="bg-green-500 h-full" style="width: 0%;"></div>
+            </div>
+        </div>
+
 
         <!-- Display Spotify Player Events -->
         <p id="status" class="text-center mt-4"></p>
