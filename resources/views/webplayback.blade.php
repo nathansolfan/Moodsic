@@ -86,9 +86,27 @@
                 document.getElementById('artist-name').textContent = track.artists.map(artist => artist.name).join(', ');
                 document.getElementById('album-art').src = track.album.images[0].url;
                 document.getElementById('track-duration').textContent = formatTime(track.duration_ms / 1000);
-
-
             }
+
+            // Update Progress
+            function updateProgress(state) {
+                const currentProgress = state.position / 1000;
+                const totalDuration = state.duration / 1000;
+                const progressPercentage = (currentProgress / totalDuration) * 100;
+
+                document.getElementById('current-progress').textContent = formatTime(currentProgress);
+                document.getElementById('progress-bar-fill').style.width = `${progressPercentage}%`;
+            }
+
+            // Periodically check the player state
+            setInterval(() => {
+                player.getCurrentState().then(state => {
+                    if (state) {
+                        updateTrackInfo(state);
+                        updateProgress(state);
+                    }
+                })
+            }, 1000);
 
             // Connect Player
             player.connect()
