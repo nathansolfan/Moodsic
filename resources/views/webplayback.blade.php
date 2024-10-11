@@ -7,7 +7,7 @@
     <title>Spotify Web Playback</title>
     @vite('resources/css/app.css')
     <script src="https://sdk.scdn.co/spotify-player.js"></script> <!-- Load the Spotify Web Playback SDK -->
-    <script src="{{ asset('js/audiofeatures.js') }}"></script> <!-- Load your audiofeatures.js file -->
+    {{-- @vite('resources/js/audiofeatures.js') --}}
 </head>
 <body class="bg-gray-900 flex items-center justify-center h-screen">
     <div class="bg-gray-800 text-white rounded-lg p-6 max-w-lg w-full shadow-md">
@@ -26,7 +26,6 @@
         </div>
 
         <!-- Audio Features -->
-
         <div class="text-center mb-6">
             <h3>Audio Features</h3>
             <p id="valence" class="text-gray-400"></p>
@@ -57,7 +56,7 @@
         <p id="status" class="text-center text-sm text-gray-400 mt-4"></p>
     </div>
 
-    <script>
+    <script type="">
         window.onSpotifyWebPlaybackSDKReady = () => {
             const token = '{{ session('spotify_webplayback_token') }}';
             const player = new Spotify.Player({
@@ -102,6 +101,9 @@
                 document.getElementById('artist-name').textContent = track.artists.map(artist => artist.name).join(', ');
                 document.getElementById('album-art').src = track.album.images[0].url;
                 document.getElementById('track-duration').textContent = formatTime(track.duration_ms / 1000);
+
+                // Fetch and display audio features
+                // getAudioFeatures(track.id, token);
             }
 
             // Update Progress

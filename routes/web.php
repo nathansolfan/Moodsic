@@ -4,9 +4,15 @@ use App\Http\Controllers\SpotifyController;
 use App\Http\Controllers\WebPlaybackController;
 use Illuminate\Support\Facades\Route;
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
 Route::get('/', function () {
+    session()->flash('error', 'Test error message');
     return view('welcome');
 });
+
 
 
 // Existing SpotifyController routes
