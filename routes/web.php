@@ -28,7 +28,12 @@ Route::post('/playlist', [SpotifyController::class, 'generatePlaylist'])->name('
 
 
 // New WebPlaybackController routes
-
 Route::get('/webplayback/login', [WebPlaybackController::class, 'login'])->name('webplayback.login');
 Route::get('/webplayback/callback', [WebPlaybackController::class, 'callback'])->name('webplayback.callback');
 Route::get('/webplayback', [WebPlaybackController::class, 'playback'])->name('webplayback');
+
+
+// LiveWire Playback
+Route::get('/livewireplayback' , function () {
+    return view('livewireplayback');
+});
