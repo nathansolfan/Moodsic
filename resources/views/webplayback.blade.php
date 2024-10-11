@@ -18,6 +18,15 @@
             <div class="text-red-500 mb-4 text-center">{{ session('error') }}</div>
         @endif
 
+        <!-- Loading Spinner-->
+        <div id="loading" class="text-center mb-4 hidden">
+            <svg class="animate-spin h-8 w-8 text-green-500 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            <span class="sr-only">Loading...</span>
+        </div>
+
         <!-- Current Track info -->
         <div class="text-center mb-6">
             <img id="album-art" class="w-48 h-48 mx-auto rounded-lg shadow-lg" src="" alt="Album Art">
@@ -35,7 +44,6 @@
             <p id="acousticness" class="text-gray-400"></p>
             <p id="instrumentalness" class="text-gray-400"></p>
         </div>
-
 
         <!-- Button to toggle play/pause -->
         <div class="text-center mb-4">
@@ -56,8 +64,19 @@
         <p id="status" class="text-center text-sm text-gray-400 mt-4"></p>
     </div>
 
-    <script type="">
+    <script>
+
+        function displayError(message) {
+            const statusElement = document.getElementById('status')
+            statusElement.innerText = message;
+            statusElement.classList.add('text-red-500');
+        }
+
+
+
         window.onSpotifyWebPlaybackSDKReady = () => {
+            showLoading(true); // Show loading spinner while initializing
+
             const token = '{{ session('spotify_webplayback_token') }}';
             const player = new Spotify.Player({
                 name: 'My Web Playback Player',
@@ -69,18 +88,40 @@
             player.addListener('ready', ({ device_id }) => {
                 console.log('Ready with Device ID', device_id);
                 document.getElementById('status').innerText = 'Player is ready with Device ID ' + device_id;
+                showLoading(false); // Hide loading spinner when ready
             });
 
             // Not Ready Event
             player.addListener('not_ready', ({ device_id }) => {
                 console.log('Device ID has gone offline', device_id);
                 document.getElementById('status').innerText = 'Device ID has gone offline ' + device_id;
+                showLoading(false); // Hide loading spinner if player is not ready
             });
 
             // Error Listeners
-            player.addListener('initialization_error', ({ message }) => console.error(message));
-            player.addListener('authentication_error', ({ message }) => console.error(message));
-            player.addListener('account_error', ({ message }) => console.error(message));
+            player.addListener('initialization_error', ({ message}) => {
+                console.error(message);
+                displayError('Initialization error: ' + message)
+                showLoading(false); // Hide loading on error
+            })
+
+            player.addListener('authentication_error', ({ message }) => {
+                console.error(message);
+                displayError('Authentication error: ' + message);
+                showLoading(false); // Hide loading spinner on error
+                });
+
+            player.addListener('account_error', ({ message }) => {
+                console.error(message);
+                displayError('Account error: ' + message);
+                showLoading(false); // Hide loading spinner on error
+                });
+
+            // Function to show or hide the loading spinner
+            function showLoading(show) {
+                document.getElementById('loading').classList.toggle('hidden', !show);
+            }
+
 
             // Toggle Play
             document.getElementById('togglePlay').onclick = function() {
@@ -122,8 +163,18 @@
                     if (state) {
                         updateTrackInfo(state);
                         updateProgress(state);
+                        getAudioFeatures(state.track_window.current_track.id, token); // Fetch audio features
+                        showLoading(false); // Hide loading spinner when state is available
+                    } else {
+                        console.log('No active track playing');
+                        document.getElementById('status').innerText = 'No active track playing';
+                        showLoading(false); // Hide loading spinner when no track is playing
                     }
-                });
+                }).catch(error => {
+                    console.error('Error getting player state', error);
+                    displayError('Error getting player state');
+                    showLoading(false); // Hide loading spinner on error
+                })
             }, 1000);
 
             // Connect Player

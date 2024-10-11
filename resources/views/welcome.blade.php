@@ -17,11 +17,6 @@
                 Go to Spotify Web Playback (localhost)
             </a>
 
-
-
-
-
-
             <!-- Display session error message if available -->
             @if(session('error'))
                 <div class="bg-red-500 text-white p-4 rounded-md mt-4">
