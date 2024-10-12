@@ -33,6 +33,9 @@
             <h2 id="track-name" class="text-xl font-semibold mt-4"></h2>
             <p id="artist-name" class="text-gray-400"></p>
         </div>
+        <div>
+            <p>babeee</p>
+        </div>
 
         {{-- <!-- Audio Features -->
         <div class="text-center mb-6">
