@@ -34,7 +34,7 @@
             <p id="artist-name" class="text-gray-400"></p>
         </div>
 
-        <!-- Audio Features -->
+        {{-- <!-- Audio Features -->
         <div class="text-center mb-6">
             <h3>Audio Features</h3>
             <p id="valence" class="text-gray-400"></p>
@@ -43,7 +43,7 @@
             <p id="tempo" class="text-gray-400"></p>
             <p id="acousticness" class="text-gray-400"></p>
             <p id="instrumentalness" class="text-gray-400"></p>
-        </div>
+        </div> --}}
 
         <!-- Button to toggle play/pause -->
         <div class="text-center mb-4">
@@ -71,8 +71,6 @@
             statusElement.innerText = message;
             statusElement.classList.add('text-red-500');
         }
-
-
 
         window.onSpotifyWebPlaybackSDKReady = () => {
             showLoading(true); // Show loading spinner while initializing
@@ -122,7 +120,6 @@
                 document.getElementById('loading').classList.toggle('hidden', !show);
             }
 
-
             // Toggle Play
             document.getElementById('togglePlay').onclick = function() {
                 player.togglePlay();
@@ -163,7 +160,7 @@
                     if (state) {
                         updateTrackInfo(state);
                         updateProgress(state);
-                        getAudioFeatures(state.track_window.current_track.id, token); // Fetch audio features
+                        // getAudioFeatures(state.track_window.current_track.id, token); // Fetch audio features
                         showLoading(false); // Hide loading spinner when state is available
                     } else {
                         console.log('No active track playing');
