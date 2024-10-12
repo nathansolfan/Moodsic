@@ -65,11 +65,22 @@
     </div>
 
     <script>
-
         function displayError(message) {
             const statusElement = document.getElementById('status')
             statusElement.innerText = message;
             statusElement.classList.add('text-red-500');
+        }
+
+        // Function to show or hide the loading spinner
+        function showLoading(show) {
+            document.getElementById('loading').classList.toggle('hidden', !show);
+        }
+
+        // Function to format time in mm:ss format
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
         }
 
         window.onSpotifyWebPlaybackSDKReady = () => {
@@ -97,54 +108,39 @@
             });
 
             // Error Listeners
-            player.addListener('initialization_error', ({ message}) => {
+            player.addListener('initialization_error', ({ message }) => {
                 console.error(message);
-                displayError('Initialization error: ' + message)
+                displayError('Initialization error: ' + message);
                 showLoading(false); // Hide loading on error
-            })
+            });
 
             player.addListener('authentication_error', ({ message }) => {
                 console.error(message);
                 displayError('Authentication error: ' + message);
                 showLoading(false); // Hide loading spinner on error
-                });
+            });
 
             player.addListener('account_error', ({ message }) => {
                 console.error(message);
                 displayError('Account error: ' + message);
                 showLoading(false); // Hide loading spinner on error
-                });
+            });
 
-            // Function to show or hide the loading spinner
-            function showLoading(show) {
-                document.getElementById('loading').classList.toggle('hidden', !show);
-            }
-
-            // Toggle Play
-            document.getElementById('togglePlay').onclick = function() {
+            // Toggle Play Button
+            document.getElementById('togglePlay').onclick = function () {
                 player.togglePlay();
             };
 
-            // Function to format time in mm:ss format
-            function formatTime(seconds) {
-                const minutes = Math.floor(seconds / 60);
-                const remainingSeconds = Math.floor(seconds % 60);
-                return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-            }
-
-            // Update track info
+            // Function to update track info
             function updateTrackInfo(state) {
                 const track = state.track_window.current_track;
                 document.getElementById('track-name').textContent = track.name;
                 document.getElementById('artist-name').textContent = track.artists.map(artist => artist.name).join(', ');
                 document.getElementById('album-art').src = track.album.images[0].url;
                 document.getElementById('track-duration').textContent = formatTime(track.duration_ms / 1000);
-
-                // Fetch and display audio features
-                // getAudioFeatures(track.id, token);
             }
 
-            // Update Progress
+            // Function to update progress bar
             function updateProgress(state) {
                 const currentProgress = state.position / 1000;
                 const totalDuration = state.duration / 1000;
@@ -154,28 +150,37 @@
                 document.getElementById('progress-bar-fill').style.width = `${progressPercentage}%`;
             }
 
-            // Periodically check the player state
-            setInterval(() => {
-                player.getCurrentState().then(state => {
-                    if (state) {
-                        updateTrackInfo(state);
-                        updateProgress(state);
-                        // getAudioFeatures(state.track_window.current_track.id, token); // Fetch audio features
-                        showLoading(false); // Hide loading spinner when state is available
-                    } else {
-                        console.log('No active track playing');
-                        document.getElementById('status').innerText = 'No active track playing';
-                        showLoading(false); // Hide loading spinner when no track is playing
-                    }
-                }).catch(error => {
-                    console.error('Error getting player state', error);
-                    displayError('Error getting player state');
-                    showLoading(false); // Hide loading spinner on error
-                })
-            }, 1000);
-
-            // Connect Player
-            player.connect();
+            // Connect Player and Start State Monitoring
+            player.connect().then(success => {
+                if (success) {
+                    console.log('Player connected successfully!');
+                    // Introduce a slight delay before starting to check player state
+                    setTimeout(() => {
+                        // Periodically check the player state after initialization
+                        setInterval(() => {
+                            player.getCurrentState().then(state => {
+                                if (state && state.track_window && state.track_window.current_track) {
+                                    updateTrackInfo(state);
+                                    updateProgress(state);
+                                    document.getElementById('status').innerText = '';
+                                } else {
+                                    console.log('No active track playing');
+                                    document.getElementById('status').innerText = 'No active track playing';
+                                }
+                                showLoading(false); // Hide loading spinner when state is available
+                            }).catch(error => {
+                                console.error('Error getting player state', error);
+                                displayError('Error getting player state');
+                                showLoading(false); // Hide loading spinner on error
+                            });
+                        }, 1000); // Polling every 1 second
+                    }, 2000); // Initial delay of 2 seconds
+                } else {
+                    console.error('Failed to connect to the player!');
+                    displayError('Failed to connect to the player!');
+                    showLoading(false);
+                }
+            });
         };
     </script>
 </body>
