@@ -7,7 +7,7 @@ use Livewire\Component;
 
 class LivewirePlayback extends Component
 {
-    public $trackname = 'Loading...';
+    public $trackName = 'Loading...';
     public $artistName = 'Loading...';
     public $isPlaying = false;
     public $errorMessage = '';
@@ -48,11 +48,33 @@ class LivewirePlayback extends Component
 
     public function loadTrackInfo()
     {
+        if (!$this->token) {
+            $this->errorMessage = 'No access token available';
+            return;
+        }
 
+        try {
+            $client = new Client();
+            $response = $client->get('https://api.spotify.com/v1/me/player/currently-playing', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+
+            $body = json_decode($response->getBody());
+
+            if ($body && $body->item) {
+                $track = $body->item;
+                $this->trackName = $track->name;
+                $this->artistName = implode(', ', array_map(fn($artist) => $artist->name, $track->artists));
+                $this->albumArt = $track->album->images[0]->url;
+                $this->duration = gmdate("i:s", $track->duration_ms / 1000);
+                $this->progress = gmdate("i:s", $body->progress_ms / 1000);
+            }
+        } catch (\Exception $e) {
+            $this->errorMessage = 'Error fetching track info: ' . $e->getMessage();
+        }
     }
-
-
-
 
     public function render()
     {
