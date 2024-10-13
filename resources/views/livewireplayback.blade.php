@@ -21,7 +21,8 @@
     <script>
         setInterval(function() {
             Livewire.emit('refreshTrackInfo');
-        }, 10000); // Refresh every 10 seconds
+        }, 5000); // Refresh every 5 seconds
     </script>
+
 </body>
 </html>

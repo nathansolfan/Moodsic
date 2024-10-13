@@ -14,49 +14,101 @@ class LivewirePlayback extends Component
     public $albumArt = '';
     public $progress = '00:00';
     public $duration = '00:00';
+    public $deviceId = '';
 
+    // Declare the token property
     protected $token;
 
     public function mount()
-    {
-        // Fetch access token from session
-        $this->token = session('spotify_webplayback_token');
+{
+    // Try to fetch the access token
+    $this->token = session('spotify_webplayback_token');  // Using the same session key for both
+    // dd($this->token);
+    if (!$this->token) {
 
-        if (!$this->token) {
-            $this->errorMessage = 'No access token available. Please log in.';
-        } else {
-            $this->loadTrackInfo();
-        }
+        $this->errorMessage = 'No access token available. Please log in.';
+    } else {
+        $this->loadTrackInfo();
+    }
+}
+
+public function togglePlay()
+{
+    // Fetch the token again to ensure session persistence
+    $token = session('spotify_webplayback_token');
+
+    if (!$token) {
+        $this->errorMessage = 'No access token available.';
+        return;
     }
 
-    public function togglePlay()
-    {
-        if (!$this->token) {
-            $this->errorMessage = 'No access token available.';
+    try {
+        $client = new Client();
+
+        // Check for active devices
+        $deviceResponse = $client->get('https://api.spotify.com/v1/me/player/devices', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+            ],
+        ]);
+
+        $devices = json_decode($deviceResponse->getBody());
+
+        if (empty($devices->devices)) {
+            $this->errorMessage = 'No active devices found. Please ensure a Spotify player is active.';
             return;
         }
 
-        try {
-            $client = new Client();
-            // Determine play or pause based on current state
-            $url = $this->isPlaying
-                ? 'https://api.spotify.com/v1/me/player/pause'
-                : 'https://api.spotify.com/v1/me/player/play';
+        // Use the first active device or specify a device ID from the list
+        $device_id = $devices->devices[0]->id;
 
-            $client->put($url, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
-                ],
-            ]);
-            $this->isPlaying = !$this->isPlaying;
-        } catch (\Exception $e) {
-            $this->errorMessage = 'Error toggling play: ' . $e->getMessage();
-        }
+        // Make sure to transfer playback to this device first
+        $client->put('https://api.spotify.com/v1/me/player', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+            ],
+            'json' => [
+                'device_ids' => [$device_id],  // Forcefully transfer playback to this device
+                'play' => true,  // Start playing immediately
+            ],
+        ]);
+
+        // Now toggle the play/pause state
+        $url = $this->isPlaying
+            ? 'https://api.spotify.com/v1/me/player/pause'
+            : 'https://api.spotify.com/v1/me/player/play';
+
+        // Send the command to Spotify
+        $client->put($url, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+            ],
+            'json' => [
+                'device_id' => $device_id,  // Explicitly pass the device_id
+            ],
+        ]);
+
+        // Update the playing state
+        $this->isPlaying = !$this->isPlaying;
+
+    } catch (\Exception $e) {
+        $this->errorMessage = 'Error toggling play: ' . $e->getMessage();
     }
+}
+
+
+
+public function refreshTrackInfo()
+{
+    $this->loadTrackInfo();
+}
+
 
     public function loadTrackInfo()
     {
-        if (!$this->token) {
+        $token = session('spotify_webplayback_token');
+
+        if (!$token) {
             $this->errorMessage = 'No access token available';
             return;
         }
@@ -65,7 +117,7 @@ class LivewirePlayback extends Component
             $client = new Client();
             $response = $client->get('https://api.spotify.com/v1/me/player/currently-playing', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
+                    'Authorization' => 'Bearer ' . $token,
                 ],
             ]);
 
@@ -87,11 +139,5 @@ class LivewirePlayback extends Component
     public function render()
     {
         return view('livewire.livewire-playback');
-    }
-
-    // Optional: Refresh track info every few seconds
-    public function refreshTrackInfo()
-    {
-        $this->loadTrackInfo();
     }
 }

@@ -6,6 +6,11 @@
         <div class="text-red-500 mb-4 text-center">{{ $errorMessage }}</div>
     @endif
 
+    {{-- Display device ID for debugging --}}
+    @if ($deviceId)
+        <div class="text-green-500 mb-4 text-center">Device ID: {{ $deviceId }}</div>
+    @endif
+
     {{-- Track Info --}}
     <div class="text-center mb-6">
         @if ($albumArt)

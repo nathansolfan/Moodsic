@@ -44,6 +44,7 @@ class WebPlaybackController extends Controller
 
         // Store access token in session
         session(['spotify_webplayback_token' => $body->access_token]);
+        session(['spotify_livewire_token' => $body->access_token]);  // Token for /livewireplayback
 
         // Redirect to Web Plaback view
         return redirect()->route('webplayback');
