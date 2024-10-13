@@ -16,5 +16,12 @@
     </div>
 
     @livewireScripts
+
+    {{-- Optional: Auto-refresh track info every 10 seconds --}}
+    <script>
+        setInterval(function() {
+            Livewire.emit('refreshTrackInfo');
+        }, 10000); // Refresh every 10 seconds
+    </script>
 </body>
 </html>

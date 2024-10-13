@@ -19,7 +19,7 @@ class LivewirePlayback extends Component
 
     public function mount()
     {
-        // fetch access token from session
+        // Fetch access token from session
         $this->token = session('spotify_webplayback_token');
 
         if (!$this->token) {
@@ -36,14 +36,22 @@ class LivewirePlayback extends Component
             return;
         }
 
-        // Call SPOTIFY API to toggle play/pause
-        $client = new Client();
-        $response = $client->put('https://api.spotify.com/v1/me/player/play', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->token,
-            ],
-        ]);
-        $this->isPlaying = !$this->isPlaying;
+        try {
+            $client = new Client();
+            // Determine play or pause based on current state
+            $url = $this->isPlaying
+                ? 'https://api.spotify.com/v1/me/player/pause'
+                : 'https://api.spotify.com/v1/me/player/play';
+
+            $client->put($url, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+            $this->isPlaying = !$this->isPlaying;
+        } catch (\Exception $e) {
+            $this->errorMessage = 'Error toggling play: ' . $e->getMessage();
+        }
     }
 
     public function loadTrackInfo()
@@ -79,5 +87,11 @@ class LivewirePlayback extends Component
     public function render()
     {
         return view('livewire.livewire-playback');
+    }
+
+    // Optional: Refresh track info every few seconds
+    public function refreshTrackInfo()
+    {
+        $this->loadTrackInfo();
     }
 }

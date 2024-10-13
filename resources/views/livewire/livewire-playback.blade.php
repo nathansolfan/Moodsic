@@ -8,9 +8,11 @@
 
     {{-- Track Info --}}
     <div class="text-center mb-6">
-        <img src="{{ $albumArt }}" alt="Album Art" class="w-48 h-48 mx-auto rounded-lg shadow-lg">
-        <h2>{{ $trackName }}</h2>
-        <p>{{ $artistName }}</p>
+        @if ($albumArt)
+            <img src="{{ $albumArt }}" alt="Album Art" class="w-48 h-48 mx-auto rounded-lg shadow-lg">
+        @endif
+        <h2 class="text-xl font-semibold mt-4">{{ $trackName }}</h2>
+        <p class="text-gray-400">{{ $artistName }}</p>
     </div>
 
     {{-- Play Button --}}
@@ -24,7 +26,7 @@
     <div id="progress-container" class="text-center mb-4">
         <span id="current-progress" class="text-sm">{{ $progress }}</span> / <span id="track-duration" class="text-sm">{{ $duration }}</span>
         <div class="bg-gray-600 mt-2 w-full h-2 rounded-full overflow-hidden">
-            <div id="progress-bar-fill" class="bg-green-500 h-full" style="width: 50%;"></div>
+            <div id="progress-bar-fill" class="bg-green-500 h-full" style="width: {{ ($progress != '00:00' && $duration != '00:00') ? (intval(str_replace(':', '', $progress)) / intval(str_replace(':', '', $duration))) * 100 : 0 }}%;"></div>
         </div>
     </div>
 </div>
