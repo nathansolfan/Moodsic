@@ -13,7 +13,7 @@
             <h1 class="text-2xl font-bold mb-4">Welcome to the Spotify Web Playback App</h1>
 
             <!-- Link for localhost -->
-            <a href="http://localhost:8000/webplayback/callback" class="text-lg text-blue-500 underline">
+            <a href="http://localhost:8000/webplayback/login" class="text-lg text-blue-500 underline">
                 Go to Spotify Web Playback (localhost)
             </a>
 
