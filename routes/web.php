@@ -37,3 +37,8 @@ Route::get('/webplayback', [WebPlaybackController::class, 'playback'])->name('we
 Route::get('/livewireplayback' , function () {
     return view('livewireplayback');
 });
+
+// React Route
+Route::get('reactspotify', function() {
+    return view('reactspotify');
+});
