@@ -20,13 +20,12 @@ const SpotifyPlayer = () => {
 
     useEffect(() => {
         const token = document.querySelector('meta[name="spotify-token"]').getAttribute('content');
-        console.log("Spotify token:", token); // Add this log to check the token
 
-        // Check for Spotify SDK
         if (!window.Spotify) {
             const script = document.createElement('script');
             script.src = "https://sdk.scdn.co/spotify-player.js";
             script.async = true;
+            document.body.appendChild(script);
 
             script.onload = () => {
                 console.log('Spotify SDK loaded');
@@ -37,10 +36,7 @@ const SpotifyPlayer = () => {
                 setErrorMessage('Spotify SDK failed to load');
                 console.error('Spotify SDK failed to load');
             };
-
-            document.body.appendChild(script);
         } else {
-            console.log('Spotify SDK is already loaded');
             initializePlayer(token);
         }
     }, []);
@@ -92,10 +88,11 @@ const SpotifyPlayer = () => {
         };
     };
 
-    // Function toggle play/pause
     const togglePlay = () => {
         if (player) {
-            player.togglePlay().catch(error => setErrorMessage('Failed to toggle play/pause.'));
+            player.togglePlay().catch(error => {
+                setErrorMessage('Failed to toggle play/pause.');
+            });
         }
     };
 
