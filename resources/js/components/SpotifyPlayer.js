@@ -56,17 +56,52 @@ useEffect( () => {
 
             const currentTrack = state.track_window.current_track;
             setTrackName(currentTrack.name);
-        })
+            setArtistName(currentTrack.artists.map(artist => artist.name).join(', '));
+            setAlbumArt(currentTrack.album.images[0].url);
+            setDuration(formatTime(currentTrack.duration_ms));
+            setProgress(formatTime(state.position));
+            setIsPlaying(!state.paused);
+        });
 
-
-
-
-
-
-
-
-
-
+        // Connect to the player
+        playerInstance.connect();
     }
-})
+// End useEffect()
+}, [])
+
+
+// Function toggle play/pause
+const togglePlay = () => {
+    player.togglePlay().catch(error => setErrorMessage('Failed to toggle play/pause.'))
+}
+
+return (
+    <div className="bg-gray-800 text-white rounded-lg p-6 max-w-lg w-full shadow-md">
+        <h1 className="text-3xl font-bold text-center mb-8">Spotify Web Playback (React)</h1>
+
+        {/* Display any error msg */}
+        {errorMessage && (
+            <div className="text-red-500 mb-4 text-center"> {errorMessage} </div>
+        )}
+
+        {/* Track Info */}
+        <div>
+            {albumArt && (
+                <img src={albumArt} alt="Album Art" className="w-48 h-48 mx-auto rounded-lg shadow-lg" />
+            )}
+            <h2> {trackName} </h2>
+            <p> {artistName} </p>
+        </div>
+
+
+
+
+
+
+
+
+    </div>
+)
+
+
 
