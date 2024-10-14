@@ -22,9 +22,19 @@ const SpotifyPlayer = () => {
 
     useEffect(() => {
         const token = document.querySelector('meta[name="spotify-token"]').getAttribute('content');
+        console.log("Spotify token:", token); // Add this log to check the token
+
+
+        // Check if the Spotify SDK is loaded
+    if (!window.Spotify) {
+        console.error('Spotify SDK not loaded');
+        return;
+    }
 
         // Initialize Player
         window.onSpotifyWebPlaybackSDKReady = () => {
+            console.log("Spotify Web Playback SDK is ready");
+
             const playerInstance = new window.Spotify.Player({
                 name: 'Web Playback SDK',
                 getOAuthToken: cb => { cb(token); },
