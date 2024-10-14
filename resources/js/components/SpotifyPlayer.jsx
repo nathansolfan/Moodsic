@@ -1,6 +1,4 @@
-import React from 'react';
-
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 
 const SpotifyPlayer = () => {
     const [trackName, setTrackName] = useState('Loading...');
@@ -24,14 +22,30 @@ const SpotifyPlayer = () => {
         const token = document.querySelector('meta[name="spotify-token"]').getAttribute('content');
         console.log("Spotify token:", token); // Add this log to check the token
 
+        // Check for Spotify SDK
+        if (!window.Spotify) {
+            const script = document.createElement('script');
+            script.src = "https://sdk.scdn.co/spotify-player.js";
+            script.async = true;
 
-        // Check if the Spotify SDK is loaded
-    if (!window.Spotify) {
-        console.error('Spotify SDK not loaded');
-        return;
-    }
+            script.onload = () => {
+                console.log('Spotify SDK loaded');
+                initializePlayer(token);
+            };
 
-        // Initialize Player
+            script.onerror = () => {
+                setErrorMessage('Spotify SDK failed to load');
+                console.error('Spotify SDK failed to load');
+            };
+
+            document.body.appendChild(script);
+        } else {
+            console.log('Spotify SDK is already loaded');
+            initializePlayer(token);
+        }
+    }, []);
+
+    const initializePlayer = (token) => {
         window.onSpotifyWebPlaybackSDKReady = () => {
             console.log("Spotify Web Playback SDK is ready");
 
@@ -76,7 +90,7 @@ const SpotifyPlayer = () => {
             // Connect to the player
             playerInstance.connect();
         };
-    }, []);
+    };
 
     // Function toggle play/pause
     const togglePlay = () => {
