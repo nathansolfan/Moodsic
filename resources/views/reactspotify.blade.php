@@ -13,6 +13,8 @@
 </head>
 <body>
     <div id="spotify-player"></div>
+    <div>Spotify Token: {{ session('spotify_webplayback_token') }}</div>
+
 
     @viteReactRefresh
     @vite('resources/js/app.jsx')
